@@ -123,7 +123,13 @@
             } catch (error) {
                 // 6. If anything fails, show the error
                 console.error('Error:', error);
-                fileInfo.textContent = 'Error: ' + error.message;
+                // Check if the error is about credit limits
+                if (error.message.includes('credit') || error.message.includes('limit') || error.response?.status === 402) {
+                    fileInfo.textContent = 'Sorry! Our free daily conversion limit has been reached. Please try again in a few hours.';
+                    // You could also add a link to a page explaining the limits
+                } else {
+                    fileInfo.textContent = 'Error: ' + error.message;
+                }
                 fileInfo.style.color = 'red';
                 alert('Conversion failed: ' + error.message);
             } finally {
