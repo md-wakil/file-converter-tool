@@ -83,6 +83,7 @@
             justify-content: center;
             gap: 10px;
             margin: 1rem 0;
+            flex-direction: row-reverse; /* This is the key change */
         }
         .rating input {
             display: none;
@@ -93,11 +94,26 @@
             color: #ccc;
             transition: color 0.3s;
         }
+        /* Highlight selected star and all stars to its right (which are now visually to its left) */
         .rating input:checked ~ label {
             color: #ffc107;
         }
+        /* Hover effect - highlight hovered star and all stars to the right */
         .rating label:hover,
         .rating label:hover ~ label {
+            color: #ffc107;
+        }
+        /* Ensure all stars after the hovered one get the hover color */
+        .rating:hover label {
+            color: #ffc107;
+        }
+        /* Reset stars that are before the hovered star */
+        .rating label:hover ~ label {
+            color: #ccc;
+        }
+        /* Keep the selected rating color when hovering */
+        .rating input:checked ~ label,
+        .rating:hover input:checked ~ label {
             color: #ffc107;
         }
     </style>
