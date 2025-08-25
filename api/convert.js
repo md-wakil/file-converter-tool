@@ -12,15 +12,15 @@ export default async function handler(request, response) {
 
   try {
     // 3. Get the file data from the frontend
-    const { fileName, fileUrl, formatTo } = await request.body;
+    const { fileName, fileData, formatTo } = await request.body;
 
     // 4. Create a CloudConvert job
     let job = await cloudConvert.jobs.create({
       tasks: {
-        // Task 1: Import the uploaded file
+        // Task 1: Import the file from the Base64 string we received
         'import-my-file': {
-          operation: 'import/url',
-          url: fileUrl,
+          operation: 'import/base64',
+          file: fileData, // Use the base64 string directly
           filename: fileName
         },
         // Task 2: Convert it to the target format
@@ -29,7 +29,7 @@ export default async function handler(request, response) {
           input: 'import-my-file',
           output_format: formatTo,
           // Some optional engine-specific options
-          engine: formatTo === 'pdf' ? 'libreoffice' : undefined, 
+          engine: formatTo === 'pdf' ? 'libreoffice' : 'ffmpeg', // Example: use ffmpeg for video/audio, libreoffice for documents
         },
         // Task 3: Export the converted file
         'export-my-file': {
@@ -39,8 +39,7 @@ export default async function handler(request, response) {
       }
     });
 
-    // 5. Wait for the job to finish (this is a simplification)
-    // In a real app, you'd use webhooks to be more efficient. This is a simpler "polling" method.
+    // 5. Wait for the job to finish
     job = await cloudConvert.jobs.wait(job.id);
 
     // 6. Find the export task to get the download URL
