@@ -67,7 +67,6 @@
         
         // Convert button click
         convertBtn.addEventListener('click', async () => {
-            // 1. Check if a file is selected
             if (!fileInput.files.length) {
                 alert('Please select a file to convert first.');
                 return;
@@ -75,41 +74,63 @@
 
             const file = fileInput.files[0];
             const formatTo = document.getElementById('formatTo').value;
-            const fileName = file.name.split('.')[0]; // Get filename without extension
 
-            // 2. UI Update: Show loading state
+            // 1. UI Update: Show loading state
             convertBtn.textContent = 'Converting...';
             convertBtn.disabled = true;
-            fileInfo.textContent = 'Converting, please wait...';
+            fileInfo.textContent = 'Uploading & Converting, please wait...';
             fileInfo.style.color = 'var(--primary)';
 
-            // 3. Simulate a realistic delay (3 seconds)
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            // 2. Create a temporary download link for the file to get a URL
+            // (In a real-world scenario, you'd upload this to a temporary storage first)
+            const fileUrl = URL.createObjectURL(file);
 
-            // 4. UI Update: Show success
-            fileInfo.textContent = 'Conversion complete! Downloading your file...';
-            fileInfo.style.color = 'var(--success)';
+            // 3. Prepare the data to send to our Vercel Function
+            const payload = {
+                fileName: file.name,
+                fileUrl: fileUrl, // This is a simplified approach for demo purposes
+                formatTo: formatTo
+            };
 
-            // 5. Create a fake download
-            // This creates a dummy blob (a piece of fake data) with the correct filename
-            const blob = new Blob(["This is a simulated file download. In the real version, this would be your converted file data."], { type: 'application/octet-stream' });
-            const downloadUrl = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = `${fileName}.${formatTo}`; // e.g., "MyDocument.docx"
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(downloadUrl);
+            try {
+                // 4. Call our secure Vercel API endpoint
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            // 6. Reset the button after a short delay
-            setTimeout(() => {
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+
+                // 5. If successful, download the file!
+                fileInfo.textContent = 'Conversion complete! Downloading your file...';
+                fileInfo.style.color = 'var(--success)';
+
+                // Create a hidden link and click it to trigger the download
+                const a = document.createElement('a');
+                a.href = data.downloadUrl;
+                a.download = file.name.split('.')[0] + '.' + formatTo;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+            } catch (error) {
+                // 6. If anything fails, show the error
+                console.error('Error:', error);
+                fileInfo.textContent = 'Error: ' + error.message;
+                fileInfo.style.color = 'red';
+                alert('Conversion failed: ' + error.message);
+            } finally {
+                // 7. Reset the UI
                 convertBtn.textContent = 'Convert Now';
                 convertBtn.disabled = false;
-                fileInfo.textContent = `Ready to convert again! (${file.name})`;
-                fileInfo.style.color = 'inherit';
-            }, 3000);
-
+            }
         });
         
         // FAQ accordion functionality
