@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileConverterPro - Convert Any File Format Online for Free</title>
+    <meta name="description" content="Free online file conversion tool. Convert PDF to Word, images to PDF, and many other formats instantly. No installation needed.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🔄</span>
+                    <span>FileConverterPro</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Convert Any File Format in Seconds</h1>
+            <p>Free online tool to convert PDF, Word, Excel, PowerPoint, images and more. No registration required.</p>
+        </div>
+    </section>
+
+    <!-- Converter Tool -->
+    <div class="container">
+        <div class="converter-container">
+            <div class="converter-header">
+                <h2>File Format Converter</h2>
+                <p>Convert your files quickly and securely</p>
+            </div>
+            
+            <div class="converter-steps">
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <p>Upload File</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <p>Select Format</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <p>Download</p>
+                </div>
+            </div>
+            
+            <div class="converter-interface">
+                <div class="conversion-type">
+                    <h3>Upload Your File</h3>
+                    <div class="file-drop-area" id="dropZone">
+                        <span>Drag & drop your file here or click to browse</span>
+                        <input type="file" class="file-input" id="fileInput">
+                    </div>
+                    <p class="file-info" id="fileInfo">No file selected</p>
+                    
+                    <div class="select-group">
+                        <label for="formatFrom">Convert from:</label>
+                        <select id="formatFrom">
+                            <option value="auto">Detect automatically</option>
+                            <option value="pdf">PDF</option>
+                            <option value="docx">Word (DOCX)</option>
+                            <option value="xlsx">Excel (XLSX)</option>
+                            <option value="pptx">PowerPoint (PPTX)</option>
+                            <option value="jpg">JPG Image</option>
+                            <option value="png">PNG Image</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="conversion-type">
+                    <h3>Convert To</h3>
+                    <div class="select-group">
+                        <label for="formatTo">Select output format:</label>
+                        <select id="formatTo">
+                            <option value="pdf">PDF</option>
+                            <option value="docx">Word (DOCX)</option>
+                            <option value="xlsx">Excel (XLSX)</option>
+                            <option value="pptx">PowerPoint (PPTX)</option>
+                            <option value="jpg">JPG Image</option>
+                            <option value="png">PNG Image</option>
+                            <option value="txt">Plain Text (TXT)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="select-group">
+                        <label for="quality">Output Quality:</label>
+                        <select id="quality">
+                            <option value="high">High (Larger file)</option>
+                            <option value="medium" selected>Medium (Recommended)</option>
+                            <option value="low">Low (Smaller file)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="convert-btn" id="convertBtn">Convert Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ad Space -->
+        <div class="ad-container">
+            <span class="ad-label">Advertisement</span>
+            <div class="ad-placeholder">Google AdSense Banner</div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Our File Converter</h2>
+                <p>Fast, secure, and easy-to-use tool with many advanced features</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Secure</h3>
+                    <p>Your files are encrypted and automatically deleted from our servers after 2 hours. We never share your data with third parties.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Advanced algorithms ensure your files are converted in seconds, not minutes. Process multiple files simultaneously.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💯</div>
+                    <h3>High Quality</h3>
+                    <p>Maintain original formatting, image quality, and document structure through the conversion process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Ad Space -->
+    <div class="container">
+        <div class="ad-container">
+            <span class="ad-label">Advertisement</span>
+            <div class="ad-placeholder ad-wide">Google AdSense Large Rectangle</div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Convert your files in just three simple steps</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step-card">
+                    <h3>Upload Your File</h3>
+                    <p>Drag and drop your file into the converter or click to browse your device. We support all common file formats.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3>Customize Settings</h3>
+                    <p>Select your desired output format and adjust quality settings if needed. Our tool automatically detects input format.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3>Download Converted File</h3>
+                    <p>Click the convert button and download your perfectly converted file instantly. No email required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about our file converter</p>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Is FileConverterPro really free?
+                        <span>+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Yes, our basic file conversion service is completely free with no hidden charges. We offer optional premium features for power users, but most users find our free tool meets all their needs.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        What file formats do you support?
+                        <span>+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>We support all major file formats including PDF, DOCX, XLSX, PPTX, JPG, PNG, TXT, and more. If you have a question about a specific format, please contact us.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Is there a file size limit?
+                        <span>+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Our free service allows files up to 100MB. For larger files, we offer a premium plan that supports files up to 1GB.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        How long are my files stored on your servers?
+                        <span>+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>For security and privacy, all uploaded files are automatically deleted from our servers after 2 hours. We never access your files unless required for troubleshooting with your explicit permission.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>FileConverterPro</h3>
+                    <p>The fastest and most secure online file conversion tool. Trusted by millions of users worldwide.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><a href="mailto:support@fileconverterpro.com">support@fileconverterpro.com</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 FileConverterPro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
