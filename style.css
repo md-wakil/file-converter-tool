@@ -478,3 +478,13 @@
                 display: none;
             }
         }
+
+        .email-link {
+            color: #4361ee; /* Your primary blue color */
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .email-link:hover {
+            text-decoration: underline;
+            color: #3a0ca3; /* Darker blue on hover */
+        }
