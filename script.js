@@ -55,13 +55,14 @@
                     'jpeg': 'jpeg',
                     'png': 'png',
                     'txt': 'txt'
-                };
-                
+                };     
                 if (formatMap[extension]) {
                     document.getElementById('formatFrom').value = formatMap[extension];
                 }
+                fileInfo.style.color = 'black';
             } else {
                 fileInfo.textContent = 'No file selected';
+                fileInfo.style.color = 'black';
             }
         }
         
@@ -165,5 +166,6 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
 
 
