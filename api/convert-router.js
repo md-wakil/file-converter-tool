@@ -53,6 +53,7 @@ export default async function handler(req, res) {
                 return res.json({ ...result, service: 'convertapi' });
             } catch (error) {
                 console.log("ConvertAPI failed, trying final fallback...");
+                throw error;
             }
         }
 
