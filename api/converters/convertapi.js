@@ -1,4 +1,4 @@
-export default async function convert(fileData, fileName, formatTo) {
+exports.convert = async (fileData, fileName, formatTo) => {
   try {
     console.log('ConvertAPI: Converting', fileName, 'to', formatTo);
     
