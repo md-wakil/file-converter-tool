@@ -46,13 +46,13 @@
                 const formatMap = {
                     'pdf': 'pdf',
                     'docx': 'docx',
-                    'doc': 'docx',
+                    'doc': 'doc',
                     'xlsx': 'xlsx',
-                    'xls': 'xlsx',
+                    'xls': 'xls',
                     'pptx': 'pptx',
-                    'ppt': 'pptx',
+                    'ppt': 'ppt',
                     'jpg': 'jpg',
-                    'jpeg': 'jpg',
+                    'jpeg': 'jpeg',
                     'png': 'png',
                     'txt': 'txt'
                 };
@@ -165,3 +165,4 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
