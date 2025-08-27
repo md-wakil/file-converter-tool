@@ -210,7 +210,10 @@
         .file-input {
             display: none;
         }
-        
+
+        .file-info {
+            margin-bottom: 1rem;
+        }
         .convert-btn {
             background: var(--primary);
             color: white;
@@ -518,4 +521,5 @@
         .seo-content li {
             margin-bottom: 0.7rem;
             line-height: 1.6;
+
         }
