@@ -45,7 +45,7 @@ export default async function handler(req, res) {
         }**/
 
         // Try ConvertAPI second (if under daily limit)
-        if (dailyUsage.convertapi < 10) {
+        //if (dailyUsage.convertapi < 10) {
             try {
                 result = await convertAPI.convert(fileData, fileName, formatTo);
                 dailyUsage.convertapi++;
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
                 }
                 throw error;
             }
-        }
+        //}
 
         // Try OnlineConvertFree as final fallback
         /**try {
