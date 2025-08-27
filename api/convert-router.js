@@ -1,6 +1,6 @@
 // api/convert-router.js
 const cloudConvert = require('./converters/cloudconvert');
-const convertAPI = require('./converters/convertapi-debug');
+const convertAPI = require('./converters/convertapi');
 const onlineConvertFree = require('./converters/onlineconvertfree');
 
 // Track daily usage
