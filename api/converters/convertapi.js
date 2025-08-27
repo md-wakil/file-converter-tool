@@ -1,19 +1,28 @@
+// api/converters/convertapi.js
 const FormData = require('form-data');
 
 exports.convert = async (fileData, fileName, formatTo) => {
   try {
-    console.log('Starting ConvertAPI conversion for:', fileName, 'to', formatTo);
+    console.log('ConvertAPI: Starting conversion', fileName, 'to', formatTo);
     
+    // Check if format is supported
+    const supportedFormats = ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png', 'txt'];
+    if (!supportedFormats.includes(formatTo.toLowerCase())) {
+      throw new Error(`ConvertAPI does not support conversion to ${formatTo}`);
+    }
+
     // Convert base64 to buffer
     const fileBuffer = Buffer.from(fileData, 'base64');
     
-    // Create form data
+    // Check file size (ConvertAPI free tier has limits)
+    if (fileBuffer.length > 10 * 1024 * 1024) { // 10MB limit
+      throw new Error('File size too large for ConvertAPI free tier (max 10MB)');
+    }
+
     const form = new FormData();
     form.append('File', fileBuffer, fileName);
     form.append('OutputFormat', formatTo);
 
-    console.log('Sending request to ConvertAPI...');
-    
     const response = await fetch('https://v2.convertapi.com/convert', {
       method: 'POST',
       headers: {
@@ -23,33 +32,35 @@ exports.convert = async (fileData, fileName, formatTo) => {
       body: form
     });
 
-    console.log('ConvertAPI response status:', response.status);
-    
     const responseText = await response.text();
-    console.log('ConvertAPI response text (first 200 chars):', responseText.substring(0, 200));
+    console.log('ConvertAPI response status:', response.status);
+    console.log('ConvertAPI response preview:', responseText.substring(0, 200));
 
-    // Check if response is HTML (indicating an error page)
-    if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
-      throw new Error('ConvertAPI returned HTML error page. Check API key and account status.');
+    // Handle non-JSON responses
+    if (!isJsonString(responseText)) {
+      if (responseText.includes('Invalid file format') || responseText.includes('unsupported format')) {
+        throw new Error('ConvertAPI: Unsupported file format for conversion');
+      }
+      if (responseText.includes('quota') || responseText.includes('limit')) {
+        throw new Error('ConvertAPI: Daily conversion limit reached');
+      }
+      if (responseText.includes('size') || responseText.includes('too large')) {
+        throw new Error('ConvertAPI: File size too large');
+      }
+      throw new Error(`ConvertAPI returned non-JSON response: ${responseText.substring(0, 100)}`);
     }
 
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (parseError) {
-      console.error('Failed to parse JSON:', parseError);
-      throw new Error(`ConvertAPI returned invalid JSON: ${responseText.substring(0, 100)}...`);
-    }
-
+    const data = JSON.parse(responseText);
+    
     if (!response.ok) {
-      throw new Error(`ConvertAPI error ${response.status}: ${data.message || response.statusText}`);
+      throw new Error(`ConvertAPI error ${response.status}: ${data.message || JSON.stringify(data)}`);
     }
 
     if (!data.Files || !data.Files[0] || !data.Files[0].Url) {
       throw new Error('ConvertAPI response missing file URL');
     }
 
-    console.log('ConvertAPI success! Download URL:', data.Files[0].Url);
+    console.log('ConvertAPI success!');
     return {
       downloadUrl: data.Files[0].Url,
       service: 'convertapi'
@@ -57,6 +68,15 @@ exports.convert = async (fileData, fileName, formatTo) => {
 
   } catch (error) {
     console.error('ConvertAPI conversion failed:', error.message);
-    throw new Error(`ConvertAPI failed: ${error.message}`);
+    throw error; // Re-throw to let router handle fallback
   }
 };
+
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
