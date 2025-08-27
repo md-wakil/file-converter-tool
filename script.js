@@ -105,32 +105,39 @@
 
                 try {
                     // 4. Call our secure Vercel API endpoint
-                    const response = await fetch('/api/convert', {
+                    const response = await fetch('/api/convert-router', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(payload)
                     });
-
+                    
                     const data = await response.json();
 
                     if (!response.ok) {
                         throw new Error(data.error || 'Something went wrong');
                     }
 
-                    // 5. If successful, download the file!
-                    fileInfo.textContent = 'Conversion complete! Downloading your file...';
-                    fileInfo.style.color = 'var(--success)';
+                    if (response.ok) {
+                        console.log("Used service:", data.service);
+                        if (data.message) {
+                            // Show message for slower services
+                            fileInfo.textContent = data.message;
+                        }
+                        // Continue with download...
+                        // 5. If successful, download the file!
+                        fileInfo.textContent = 'Conversion complete! Downloading your file...';
+                        fileInfo.style.color = 'var(--success)';
 
-                    // Create a hidden link and click it to trigger the download
-                    const a = document.createElement('a');
-                    a.href = data.downloadUrl;
-                    a.download = file.name.split('.')[0] + '.' + formatTo;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-
+                        // Create a hidden link and click it to trigger the download
+                        const a = document.createElement('a');
+                        a.href = data.downloadUrl;
+                        a.download = file.name.split('.')[0] + '.' + formatTo;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
                 } catch (error) {
                     // 6. If anything fails, show the error
                     console.error('Error:', error);
