@@ -1,38 +1,40 @@
-// api/converters/convertapi.js
 import FormData from 'form-data';
-import fetch from 'node-fetch'; // If you haven't installed node-fetch yet
 
 export async function convert(fileData, fileName, formatTo) {
   try {
-    // Create FormData object for Node.js
-    const form = new FormData();
-    
-    // Convert base64 to buffer
     const fileBuffer = Buffer.from(fileData, 'base64');
-    
-    // Append file to form data
+    const form = new FormData();
     form.append('File', fileBuffer, fileName);
-    
-    // Add other parameters
     form.append('OutputFormat', formatTo);
 
-    // Make the API request
     const response = await fetch('https://v2.convertapi.com/convert', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.CONVERTAPI_SECRET}`,
-        ...form.getHeaders() // This is crucial for FormData
+        ...form.getHeaders()
       },
       body: form
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`ConvertAPI error: ${response.status} - ${errorText}`);
+    // First, get the response as text to see what it actually contains
+    const responseText = await response.text();
+    console.log('ConvertAPI raw response:', responseText);
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+    // Try to parse as JSON, but if it fails, we have the text
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse response as JSON:', parseError);
+      throw new Error(`ConvertAPI returned non-JSON response: ${responseText.substring(0, 200)}...`);
     }
 
-    const data = await response.json();
-    
+    if (!response.ok) {
+      throw new Error(`ConvertAPI error: ${response.status} - ${data.message || responseText}`);
+    }
+
     if (!data.Files || !data.Files[0] || !data.Files[0].Url) {
       throw new Error('ConvertAPI returned invalid response format');
     }
