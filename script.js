@@ -67,7 +67,7 @@
         
         // Convert button click
         convertBtn.addEventListener('click', async () => {
-            if (!fileInput.files.length) {
+            if (!fileInput.files.length || fileInfo.textContent.includes('Error: ')) {
                 alert('Please select a file to convert first.');
                 return;
             }
@@ -165,4 +165,5 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
 
