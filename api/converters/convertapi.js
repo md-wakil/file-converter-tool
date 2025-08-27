@@ -1,69 +1,78 @@
-exports.convert = async (fileData, fileName, formatTo) => {
+// api/converters/convertapi-official.js
+import ConvertApi from 'convertapi-js';
+
+// Initialize ConvertAPI with your secret
+const convertApi = ConvertApi.auth(process.env.CONVERTAPI_SECRET);
+
+export default async function convert(fileData, fileName, formatTo) {
   try {
     console.log('ConvertAPI: Converting', fileName, 'to', formatTo);
     
     // Convert base64 to buffer
     const fileBuffer = Buffer.from(fileData, 'base64');
     
-    // Create form data using Blob (works better in serverless)
-    const boundary = '----WebKitFormBoundary' + Math.random().toString(16).substring(2);
-    const chunks = [];
-    // Add file part
-    chunks.push(Buffer.from(`--${boundary}\r\n`));
-    chunks.push(Buffer.from(`Content-Disposition: form-data; name="File"; filename="${fileName}"\r\n`));
-    chunks.push(Buffer.from(`Content-Type: application/octet-stream\r\n\r\n`));
-    chunks.push(fileBuffer);
-    chunks.push(Buffer.from('\r\n'));
+    // Create a blob from the buffer
+    const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
     
-    // Add format part
-    chunks.push(Buffer.from(`--${boundary}\r\n`));
-    chunks.push(Buffer.from(`Content-Disposition: form-data; name="OutputFormat"\r\n\r\n`));
-    chunks.push(Buffer.from(`${formatTo}\r\n`));
+    // Create file object for ConvertAPI
+    const file = new File([blob], fileName, { type: 'application/octet-stream' });
     
-    chunks.push(Buffer.from(`--${boundary}--\r\n`));
+    // Create parameters
+    const params = convertApi.createParams();
+    params.add('File', file);
     
-    const formBody = Buffer.concat(chunks);
-
-    // Choose endpoint
-    let endpoint;
-    if (formatTo === 'docx' && /\.pdf$/i.test(fileName)) {
-      endpoint = 'https://v2.convertapi.com/convert/pdf/to/docx';
-    } else if (formatTo === 'pdf' && /\.(docx|doc)$/i.test(fileName)) {
-      endpoint = 'https://v2.convertapi.com/convert/docx/to/pdf';
-    } else {
-      endpoint = 'https://v2.convertapi.com/convert';
+    // Determine source format from filename
+    const sourceFormat = getSourceFormat(fileName);
+    
+    console.log('Converting from', sourceFormat, 'to', formatTo);
+    
+    // Perform conversion
+    const result = await convertApi.convert(sourceFormat, formatTo, params);
+    
+    console.log('ConvertAPI result:', result);
+    
+    // The result should contain the download URL
+    if (!result || !result.files || !result.files[0] || !result.files[0].Url) {
+      throw new Error('ConvertAPI response missing download URL');
     }
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.CONVERTAPI_SECRET}`,
-        'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        'Content-Length': formBody.length.toString()
-      },
-      body: formBody
-    });
-
-    const responseText = await response.text();
-    console.log('Response status:', response.status);
     
-    if (!response.ok) {
-      throw new Error(`ConvertAPI error ${response.status}: ${responseText}`);
-    }
-
-    const data = JSON.parse(responseText);
-    
-    if (!data.Files || !data.Files[0] || !data.Files[0].Url) {
-      throw new Error('ConvertAPI response missing file URL');
-    }
-
     return {
-      downloadUrl: data.Files[0].Url,
+      downloadUrl: result.files[0].Url,
       service: 'convertapi'
     };
 
   } catch (error) {
     console.error('ConvertAPI conversion failed:', error.message);
+    
+    // Provide more specific error messages
+    if (error.message.includes('credit') || error.message.includes('limit')) {
+      throw new Error('ConvertAPI daily limit reached');
+    }
+    if (error.message.includes('format') || error.message.includes('unsupported')) {
+      throw new Error('Unsupported file format for conversion');
+    }
+    if (error.message.includes('auth') || error.message.includes('token')) {
+      throw new Error('ConvertAPI authentication failed. Check your API key.');
+    }
+    
     throw error;
   }
+}
+
+function getSourceFormat(fileName) {
+  const ext = fileName.split('.').pop().toLowerCase();
+  const formatMap = {
+    'pdf': 'pdf',
+    'docx': 'docx',
+    'doc': 'doc',
+    'txt': 'txt',
+    'jpg': 'jpg',
+    'jpeg': 'jpeg',
+    'png': 'png',
+    'pptx': 'pptx',
+    'ppt': 'ppt',
+    'xlsx': 'xlsx',
+    'xls': 'xls'
+  };
+  return formatMap[ext] || 'pdf'; // default to pdf if unknown
 }
