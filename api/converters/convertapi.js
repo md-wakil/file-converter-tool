@@ -1,8 +1,9 @@
 // api/converters/convertapi-official-fallback.js
-// Try different import approaches:
+import ConvertApi from 'convertapi-js'
+let convertApi = ConvertApi.auth(process.env.CONVERTAPI_SECRET)
 
 // Approach 1: Default import
-const ConvertApi = require('convertapi-js').default;
+//const ConvertApi = require('convertapi-js').default;
 
 // Approach 2: Named import  
 //const { default: ConvertApi } = require('convertapi-js');
@@ -15,29 +16,30 @@ exports.convert = async (fileData, fileName, formatTo) => {
     console.log('ConvertAPI: Converting', fileName, 'to', formatTo);
     
     // Try different initialization methods
-    let convertApi;
+    //let convertApi;
     
     // Method 1: Using auth method
-    try {
+    /**try {
       convertApi = ConvertApi.auth(process.env.CONVERTAPI_SECRET);
     } catch (authError) {
       console.log('Auth method failed, trying alternative...');
       // Method 2: Using constructor
       convertApi = new ConvertApi(process.env.CONVERTAPI_SECRET);
-    }
+    }**/
     
+    // Convert base64 to buffer
     const fileBuffer = Buffer.from(fileData, 'base64');
+    
+    // Create a blob from the buffer
+    const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
+    
+    // Create file object for ConvertAPI
+    const file = new File([blob], fileName, { type: 'application/octet-stream' });
+    
+    // Create parameters
     const params = convertApi.createParams();
-    
-    // Add file using the buffer approach
-    params.add('File', {
-      value: fileBuffer,
-      options: {
-        filename: fileName,
-        contentType: 'application/octet-stream'
-      }
-    });
-    
+    params.add('File', file);
+
     const sourceFormat = getSourceFormat(fileName);
     console.log('Converting from', sourceFormat, 'to', formatTo);
     
@@ -45,7 +47,7 @@ exports.convert = async (fileData, fileName, formatTo) => {
     
     console.log('ConvertAPI result:', result);
     
-    if (!result?.files?.[0]?.Url) {
+    if (!result.files[0].Url) {
       throw new Error('ConvertAPI response missing download URL');
     }
     
