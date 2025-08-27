@@ -5,7 +5,7 @@
 const ConvertApi = require('convertapi-js').default;
 
 // Approach 2: Named import  
-const { default: ConvertApi } = require('convertapi-js');
+//const { default: ConvertApi } = require('convertapi-js');
 
 // Approach 3: Dynamic import (works in modern Node.js)
 // const ConvertApi = (await import('convertapi-js')).default;
