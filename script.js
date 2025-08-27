@@ -58,6 +58,8 @@
                 };     
                 if (formatMap[extension]) {
                     document.getElementById('formatFrom').value = formatMap[extension];
+                }else{
+                    document.getElementById('formatFrom').value = 'auto';
                 }
                 fileInfo.style.color = 'black';
             } else {
@@ -72,10 +74,13 @@
                 alert('Please select a file to convert first.');
                 return;
             }
-
+            
             const file = fileInput.files[0];
             const formatTo = document.getElementById('formatTo').value;
-
+            if(formatTo == 'auto'){
+                alert('This is not a supported file format. Please select a valid file format to convert.');
+                return;
+            }
             // 1. UI Update: Show loading state
             convertBtn.textContent = 'Converting...';
             convertBtn.disabled = true;
@@ -166,6 +171,7 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
 
 
 
