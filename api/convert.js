@@ -83,7 +83,9 @@ export default async function handler(request, response) {
       errorMessage = 'This file format conversion is not supported. Please try a different format.';
     } else if (error.message.includes('invalid') || error.message.includes('corrupt')) {
       errorMessage = 'The file appears to be invalid or corrupted. Please try a different file.';
-    } else if (error.message) {
+    } else if (error.message.includes('Payment Required') || error.message.includes('payment required')) {
+      errorMessage = 'We apologize, but the limit for free file conversion credits has been reached. Please try again later as we are actively working to increase this limit. Thank you for your understanding.';
+    }else if (error.message) {
       errorMessage = error.message;
     }
     
