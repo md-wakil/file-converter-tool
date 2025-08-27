@@ -52,7 +52,11 @@ export default async function handler(req, res) {
                 console.log("Used ConvertAPI. Daily usage:", dailyUsage.convertapi);
                 return res.json({ ...result, service: 'convertapi' });
             } catch (error) {
-                console.log("ConvertAPI failed, trying final fallback...");
+                console.log("ConvertAPI failed:", error.message);
+                // Check if it's an authentication error
+                if (error.message.includes('401') || error.message.includes('auth')) {
+                console.log("ConvertAPI authentication failed - check API key");
+                }
                 throw error;
             }
         }
