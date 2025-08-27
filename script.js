@@ -74,13 +74,14 @@
                 alert('Please select a file to convert first.');
                 return;
             }
-            
-            const file = fileInput.files[0];
-            const formatTo = document.getElementById('formatTo').value;
-            if(formatTo == 'auto'){
+           const format4m = document.getElementById('formatFrom').value;
+            if(format4m == 'auto'){
                 alert('This is not a supported file format. Please select a valid file format to convert.');
                 return;
             }
+            const file = fileInput.files[0];
+            const formatTo = document.getElementById('formatTo').value;
+            
             // 1. UI Update: Show loading state
             convertBtn.textContent = 'Converting...';
             convertBtn.disabled = true;
@@ -171,6 +172,7 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
 
 
 
