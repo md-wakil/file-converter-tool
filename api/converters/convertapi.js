@@ -1,5 +1,5 @@
 // api/converters/convertapi-official-fallback.js
-export default async function convert(fileData, fileName, formatTo) {
+exports.convert = async (fileData, fileName, formatTo) => {
   try {
     // For serverless, we might need to use a different approach
     // since Blob and File might not be available
