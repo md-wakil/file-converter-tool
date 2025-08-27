@@ -57,14 +57,14 @@ export default async function handler(req, res) {
         }
 
         // Try OnlineConvertFree as final fallback
-        try {
+        /**try {
             result = await onlineConvertFree.convert(fileData, fileName, formatTo);
             console.log("Used OnlineConvertFree (unlimited)");
             return res.json({ ...result, service: 'onlineconvertfree' });
         } catch (error) {
             console.log("All converters failed");
             throw new Error('All conversion services are currently unavailable. Please try again later.');
-        }
+        }**/
 
     } catch (error) {
         console.error('Conversion router error:', error);
