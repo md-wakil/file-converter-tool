@@ -1,20 +1,35 @@
 // api/converters/convertapi-official-fallback.js
+// Try different import approaches:
+
+// Approach 1: Default import
+const ConvertApi = require('convertapi-js').default;
+
+// Approach 2: Named import  
+const { default: ConvertApi } = require('convertapi-js');
+
+// Approach 3: Dynamic import (works in modern Node.js)
+// const ConvertApi = (await import('convertapi-js')).default;
+
 exports.convert = async (fileData, fileName, formatTo) => {
   try {
-    // For serverless, we might need to use a different approach
-    // since Blob and File might not be available
+    console.log('ConvertAPI: Converting', fileName, 'to', formatTo);
     
-    // Use the manual approach but with the official library's knowledge
-    const ConvertApi = require('convertapi-js');
-    const convertApi = ConvertApi.auth(process.env.CONVERTAPI_SECRET);
+    // Try different initialization methods
+    let convertApi;
     
-    // Convert base64 to buffer
+    // Method 1: Using auth method
+    try {
+      convertApi = ConvertApi.auth(process.env.CONVERTAPI_SECRET);
+    } catch (authError) {
+      console.log('Auth method failed, trying alternative...');
+      // Method 2: Using constructor
+      convertApi = new ConvertApi(process.env.CONVERTAPI_SECRET);
+    }
+    
     const fileBuffer = Buffer.from(fileData, 'base64');
-    
-    // Create parameters using buffer directly
     const params = convertApi.createParams();
     
-    // Use the alternative method for adding files
+    // Add file using the buffer approach
     params.add('File', {
       value: fileBuffer,
       options: {
@@ -24,7 +39,11 @@ exports.convert = async (fileData, fileName, formatTo) => {
     });
     
     const sourceFormat = getSourceFormat(fileName);
+    console.log('Converting from', sourceFormat, 'to', formatTo);
+    
     const result = await convertApi.convert(sourceFormat, formatTo, params);
+    
+    console.log('ConvertAPI result:', result);
     
     if (!result?.files?.[0]?.Url) {
       throw new Error('ConvertAPI response missing download URL');
