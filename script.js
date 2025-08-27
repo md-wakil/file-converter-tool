@@ -136,7 +136,7 @@
                     console.error('Error:', error);
                     fileInfo.textContent = 'Error: ' + error.message;
                     fileInfo.style.color = 'red';
-                    alert('Conversion failed: ' + error.message);
+                    alert('Conversion Failed: ' + error.message);
                 } finally {
                     // 7. Reset the UI
                     convertBtn.textContent = 'Convert Now';
@@ -172,6 +172,7 @@
                 element.querySelector('span').textContent = '-';
             }
         }
+
 
 
 
